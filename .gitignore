@@ -1,0 +1,7 @@
+__pycache__/
+*.pkl
+models/
+.idea/
+.vscode/
+.ipynb_checkpoints/
+venv/
