@@ -1,29 +1,173 @@
-import streamlit as st
-from src.web_predict import load_artifacts, predict_from_input
+// ================================
+// L298N Motor Driver 1 (Front Motors)
+// ================================
+#define IN1 2   // Front-Left Motor
+#define IN2 3
+#define IN3 4   // Front-Right Motor
+#define IN4 5
 
-st.set_page_config(page_title="Diabetes Detection", page_icon="🩺")
+// ================================
+// L298N Motor Driver 2 (Rear Motors)
+// ================================
+#define IN5 6   // Rear-Left Motor
+#define IN6 7
+#define IN7 8   // Rear-Right Motor
+#define IN8 9
 
-st.title("🩺 Diabetes Detection Using Machine Learning")
-st.write("Enter values to predict whether the patient has diabetes.")
+String cmd = "";
 
-model, scaler, features = load_artifacts()
+// ============================================
+// INITIAL SETUP
+// ============================================
+void setup() {
+  Serial.begin(9600);
 
-user_data = {}
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+  pinMode(IN5, OUTPUT);
+  pinMode(IN6, OUTPUT);
+  pinMode(IN7, OUTPUT);
+  pinMode(IN8, OUTPUT);
 
-cols = st.columns(2)
-for i, f in enumerate(features):
-    with cols[i % 2]:
-        user_data[f] = st.number_input(f, min_value=0.0, step=0.1)
+  stopCar();
 
-if st.button("Predict Diabetes"):
-    values = [user_data[f] for f in features]
-    pred, prob = predict_from_input(model, scaler, features, values)
+  Serial.println("Mecanum Car Ready...");
+  Serial.println("Commands: f,b,l,r,s, fr, fl, br, bl, rl, rr");
+}
 
-    st.subheader("Prediction Output")
+// ============================================
+// BASIC MOTOR FUNCTIONS
+// ============================================
+void frontLeftForward() { digitalWrite(IN1, HIGH); digitalWrite(IN2, LOW); }
+void frontLeftBackward(){ digitalWrite(IN1, LOW);  digitalWrite(IN2, HIGH); }
 
-    if pred == 1:
-        st.error(f"⚠️ High chance of Diabetes (Probability: {prob:.2f})")
-    else:
-        st.success(f"✅ No Diabetes Detected (Probability: {prob:.2f})")
+void frontRightForward(){ digitalWrite(IN3, HIGH); digitalWrite(IN4, LOW); }
+void frontRightBackward(){digitalWrite(IN3, LOW);  digitalWrite(IN4, HIGH); }
 
-    st.progress(prob)
+void rearLeftForward() { digitalWrite(IN5, HIGH); digitalWrite(IN6, LOW); }
+void rearLeftBackward(){ digitalWrite(IN5, LOW);  digitalWrite(IN6, HIGH); }
+
+void rearRightForward(){ digitalWrite(IN7, HIGH); digitalWrite(IN8, LOW); }
+void rearRightBackward(){digitalWrite(IN7, LOW);  digitalWrite(IN8, HIGH); }
+
+void motorsOff() {
+  digitalWrite(IN1, LOW); digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW); digitalWrite(IN4, LOW);
+  digitalWrite(IN5, LOW); digitalWrite(IN6, LOW);
+  digitalWrite(IN7, LOW); digitalWrite(IN8, LOW);
+}
+
+// ============================================
+// MOVEMENT FUNCTIONS
+// ============================================
+
+// ---- STOP ----
+void stopCar() { motorsOff(); }
+
+// ---- FORWARD ----
+void moveForward() {
+  frontLeftForward();
+  frontRightForward();
+  rearLeftForward();
+  rearRightForward();
+}
+
+// ---- BACKWARD ----
+void moveBackward() {
+  frontLeftBackward();
+  frontRightBackward();
+  rearLeftBackward();
+  rearRightBackward();
+}
+
+// ---- MOVE RIGHT (MECANUM STRAFE) ----
+void moveRight() {
+  frontLeftForward();
+  frontRightBackward();
+  rearLeftBackward();
+  rearRightForward();
+}
+
+// ---- MOVE LEFT (MECANUM STRAFE) ----
+void moveLeft() {
+  frontLeftBackward();
+  frontRightForward();
+  rearLeftForward();
+  rearRightBackward();
+}
+
+// ---- DIAGONAL: FRONT-RIGHT ----
+void moveFrontRight() {
+  frontLeftForward();
+  rearRightForward();
+}
+
+// ---- DIAGONAL: FRONT-LEFT ----
+void moveFrontLeft() {
+  frontRightForward();
+  rearLeftForward();
+}
+
+// ---- DIAGONAL: BACK-RIGHT ----
+void moveBackRight() {
+  frontLeftBackward();
+  rearRightBackward();
+}
+
+// ---- DIAGONAL: BACK-LEFT ----
+void moveBackLeft() {
+  frontRightBackward();
+  rearLeftBackward();
+}
+
+// ---- ROTATE LEFT ----
+void rotateLeft() {
+  frontLeftBackward();
+  frontRightForward();
+  rearLeftBackward();
+  rearRightForward();
+}
+
+// ---- ROTATE RIGHT ----
+void rotateRight() {
+  frontLeftForward();
+  frontRightBackward();
+  rearLeftForward();
+  rearRightBackward();
+}
+
+
+// ============================================
+// PROCESS SERIAL CMD
+// ============================================
+void processCommand(String c) {
+  c.toLowerCase(); // remove case sensitivity
+
+  if (c == "f") moveForward();
+  else if (c == "b") moveBackward();
+  else if (c == "r") moveRight();
+  else if (c == "l") moveLeft();
+  else if (c == "fr") moveFrontRight();
+  else if (c == "fl") moveFrontLeft();
+  else if (c == "br") moveBackRight();
+  else if (c == "bl") moveBackLeft();
+  else if (c == "rl") rotateLeft();
+  else if (c == "rr") rotateRight();
+  else if (c == "s") stopCar();
+  else Serial.println("Unknown command!");
+
+  Serial.print("CMD = "); Serial.println(c);
+}
+
+// ============================================
+// LOOP (clean)
+// ============================================
+void loop() {
+  if (Serial.available()) {
+    cmd = Serial.readStringUntil('\n');
+    cmd.trim();
+    processCommand(cmd);
+  }
+}
