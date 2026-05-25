@@ -1,4 +1,4 @@
-# 🩺 Diabetes Detection using Machine Learning
+asas# 🩺 Diabetes Detection using Machine Learning
 
 A Machine Learning-based web application developed to predict the likelihood of diabetes using health-related parameters from the **PIMA Indians Diabetes Dataset**. The system leverages data preprocessing, feature engineering, and predictive modeling to provide real-time diabetes risk assessment.
 
