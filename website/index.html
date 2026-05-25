@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DiabetesAI — Intelligent Diabetes Risk Predictor</title>
+  <meta name="description" content="AI-powered diabetes risk assessment using clinical health metrics. Get instant predictions backed by machine learning." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="static/style.css" />
+</head>
+<body>
+
+  <!-- Animated background blobs -->
+  <div class="bg-blobs" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- Particle canvas -->
+  <canvas id="particles-canvas" aria-hidden="true"></canvas>
+
+  <!-- ── NAVIGATION ── -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo" id="nav-logo">
+        <span class="logo-icon">🩺</span>
+        <span class="logo-text">Diabetes<span class="logo-accent">AI</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#hero" id="nav-home">Home</a></li>
+        <li><a href="#predictor" id="nav-predictor">Predictor</a></li>
+        <li><a href="#about" id="nav-about">About</a></li>
+      </ul>
+      <a href="#predictor" class="btn btn-primary nav-cta" id="nav-cta">Try Now</a>
+    </div>
+  </nav>
+
+  <!-- ── HERO SECTION ── -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-badge" id="hero-badge">
+        <span class="badge-dot"></span>
+        AI-Powered Clinical Assessment
+      </div>
+      <h1 class="hero-title" id="hero-title">
+        Predict Diabetes Risk<br />
+        <span class="gradient-text">with Machine Learning</span>
+      </h1>
+      <p class="hero-subtitle" id="hero-subtitle">
+        Enter your clinical health metrics and get an instant, ML-backed risk assessment for Type 2 Diabetes. Powered by Logistic Regression trained on the Pima Indians Diabetes Dataset.
+      </p>
+      <div class="hero-actions">
+        <a href="#predictor" class="btn btn-primary btn-lg" id="hero-cta-primary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Start Assessment
+        </a>
+        <a href="#about" class="btn btn-ghost btn-lg" id="hero-cta-secondary">Learn More</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-number">768</span>
+          <span class="stat-label">Training Samples</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number">8</span>
+          <span class="stat-label">Clinical Features</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number">~78%</span>
+          <span class="stat-label">Model Accuracy</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <div class="hero-card-3d">
+        <div class="floating-card card-a">
+          <div class="fcard-icon">🩸</div>
+          <div class="fcard-label">Blood Glucose</div>
+          <div class="fcard-value">110 mg/dL</div>
+        </div>
+        <div class="floating-card card-b">
+          <div class="fcard-icon">📊</div>
+          <div class="fcard-label">BMI Index</div>
+          <div class="fcard-value">25.0</div>
+        </div>
+        <div class="floating-card card-c">
+          <div class="fcard-icon">💉</div>
+          <div class="fcard-label">Insulin Level</div>
+          <div class="fcard-value">79 μU/mL</div>
+        </div>
+        <div class="hero-orb">
+          <div class="orb-ring ring-1"></div>
+          <div class="orb-ring ring-2"></div>
+          <div class="orb-ring ring-3"></div>
+          <div class="orb-core">AI</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PREDICTOR SECTION ── -->
+  <section class="predictor-section" id="predictor">
+    <div class="section-header">
+      <div class="section-tag">Risk Predictor</div>
+      <h2 class="section-title">Enter Patient Health Metrics</h2>
+      <p class="section-subtitle">Fill in the fields below to generate an AI-powered diabetes risk assessment.</p>
+    </div>
+
+    <div class="predictor-container">
+      <!-- Form Panel -->
+      <div class="form-panel glass-card" id="form-panel">
+        <form id="prediction-form" novalidate>
+          <div class="form-grid">
+
+            <!-- Pregnancies -->
+            <div class="form-field" id="field-pregnancies">
+              <label class="field-label" for="pregnancies">
+                <span class="field-icon">🤱</span> Pregnancies
+              </label>
+              <div class="input-wrapper">
+                <input type="number" id="pregnancies" name="pregnancies" min="0" max="20" value="1" class="field-input" required />
+                <span class="input-unit">count</span>
+              </div>
+              <div class="field-hint">Number of times pregnant (0–20)</div>
+              <div class="range-bar"><div class="range-fill" id="range-pregnancies"></div></div>
+            </div>
+
+            <!-- Glucose -->
+            <div class="form-field" id="field-glucose">
+              <label class="field-label" for="glucose">
+                <span class="field-icon">🩸</span> Glucose
+              </label>
+              <div class="input-wrapper">
+                <input type="number" id="glucose" name="glucose" min="0" max="300" value="110" class="field-input" required />
+                <span class="input-unit">mg/dL</span>
+              </div>
+              <div class="field-hint">Plasma glucose concentration (0–300)</div>
+              <div class="range-bar"><div class="range-fill" id="range-glucose"></div></div>
+            </div>
+
+            <!-- Blood Pressure -->
+            <div class="form-field" id="field-blood_pressure">
+              <label class="field-label" for="blood_pressure">
+                <span class="field-icon">💓</span> Blood Pressure
+              </label>
+              <div class="input-wrapper">
+                <input type="number" id="blood_pressure" name="blood_pressure" min="0" max="200" value="72" class="field-input" required />
+                <span class="input-unit">mmHg</span>
+              </div>
+              <div class="field-hint">Diastolic blood pressure (0–200)</div>
+              <div class="range-bar"><div class="range-fill" id="range-blood_pressure"></div></div>
+            </div>
+
+            <!-- Skin Thickness -->
+            <div class="form-field" id="field-skin_thickness">
+              <label class="field-label" for="skin_thickness">
+                <span class="field-icon">📏</span> Skin Thickness
+              </label>
+              <div class="input-wrapper">
+                <input type="number" id="skin_thickness" name="skin_thickness" min="0" max="100" value="20" class="field-input" required />
+                <span class="input-unit">mm</span>
+              </div>
+              <div class="field-hint">Triceps skin fold thickness (0–100)</div>
+              <div class="range-bar"><div class="range-fill" id="range-skin_thickness"></div></div>
+            </div>
+
+            <!-- Insulin -->
+            <div class="form-field" id="field-insulin">
+              <label class="field-label" for="insulin">
+                <span class="field-icon">💉</span> Insulin
+              </label>
+              <div class="input-wrapper">
+                <input type="number" id="insulin" name="insulin" min="0" max="900" value="79" class="field-input" required />
+                <span class="input-unit">μU/mL</span>
+              </div>
+              <div class="field-hint">2-Hour serum insulin (0–900)</div>
+              <div class="range-bar"><div class="range-fill" id="range-insulin"></div></div>
+            </div>
+
+            <!-- BMI -->
+            <div class="form-field" id="field-bmi">
+              <label class="field-label" for="bmi">
+                <span class="field-icon">⚖️</span> BMI
+              </label>
+              <div class="input-wrapper">
+                <input type="number" id="bmi" name="bmi" min="0" max="70" step="0.1" value="25.0" class="field-input" required />
+                <span class="input-unit">kg/m²</span>
+              </div>
+              <div class="field-hint">Body mass index (0–70)</div>
+              <div class="range-bar"><div class="range-fill" id="range-bmi"></div></div>
+            </div>
+
+            <!-- DPF -->
+            <div class="form-field" id="field-dpf">
+              <label class="field-label" for="dpf">
+                <span class="field-icon">🧬</span> Diabetes Pedigree
+              </label>
+              <div class="input-wrapper">
+                <input type="number" id="dpf" name="dpf" min="0" max="3" step="0.01" value="0.50" class="field-input" required />
+                <span class="input-unit">score</span>
+              </div>
+              <div class="field-hint">Diabetes pedigree function (0–3)</div>
+              <div class="range-bar"><div class="range-fill" id="range-dpf"></div></div>
+            </div>
+
+            <!-- Age -->
+            <div class="form-field" id="field-age">
+              <label class="field-label" for="age">
+                <span class="field-icon">🎂</span> Age
+              </label>
+              <div class="input-wrapper">
+                <input type="number" id="age" name="age" min="1" max="120" value="33" class="field-input" required />
+                <span class="input-unit">years</span>
+              </div>
+              <div class="field-hint">Patient age in years (1–120)</div>
+              <div class="range-bar"><div class="range-fill" id="range-age"></div></div>
+            </div>
+
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-ghost" id="reset-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+              Reset
+            </button>
+            <button type="submit" class="btn btn-primary btn-predict" id="predict-btn">
+              <span class="btn-text">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                Analyze Risk
+              </span>
+              <span class="btn-loader" hidden>
+                <span class="spinner"></span>
+                Analyzing...
+              </span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Result Panel -->
+      <div class="result-panel" id="result-panel">
+        <!-- Idle state -->
+        <div class="result-idle glass-card" id="result-idle">
+          <div class="idle-visual">
+            <div class="idle-orb">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+          </div>
+          <h3>Awaiting Input</h3>
+          <p>Fill in the patient metrics and click <strong>Analyze Risk</strong> to get your AI-powered assessment.</p>
+          <ul class="idle-checklist">
+            <li id="check-pregnancies"><span class="check-dot"></span>Pregnancies</li>
+            <li id="check-glucose"><span class="check-dot"></span>Glucose</li>
+            <li id="check-blood_pressure"><span class="check-dot"></span>Blood Pressure</li>
+            <li id="check-skin_thickness"><span class="check-dot"></span>Skin Thickness</li>
+            <li id="check-insulin"><span class="check-dot"></span>Insulin</li>
+            <li id="check-bmi"><span class="check-dot"></span>BMI</li>
+            <li id="check-dpf"><span class="check-dot"></span>Diabetes Pedigree</li>
+            <li id="check-age"><span class="check-dot"></span>Age</li>
+          </ul>
+        </div>
+
+        <!-- Result card -->
+        <div class="result-card glass-card" id="result-card" hidden>
+          <div class="result-header">
+            <div class="result-icon" id="result-icon"></div>
+            <div class="result-meta">
+              <div class="result-label" id="result-label">Assessment Result</div>
+              <div class="result-title" id="result-title"></div>
+            </div>
+          </div>
+
+          <!-- Probability gauge -->
+          <div class="gauge-container">
+            <svg class="gauge-svg" viewBox="0 0 200 115" id="gauge-svg">
+              <defs>
+                <linearGradient id="gaugeGradLow" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" style="stop-color:#10B981"/>
+                  <stop offset="100%" style="stop-color:#34D399"/>
+                </linearGradient>
+                <linearGradient id="gaugeGradHigh" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" style="stop-color:#F59E0B"/>
+                  <stop offset="100%" style="stop-color:#EF4444"/>
+                </linearGradient>
+                <filter id="needleGlow">
+                  <feGaussianBlur stdDeviation="2" result="blur"/>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+              <!-- Track arc: center=(100,105), r=78 -->
+              <path d="M 22 105 A 78 78 0 0 1 178 105"
+                    fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="14" stroke-linecap="butt"/>
+              <!-- Tick marks at 0%, 25%, 50%, 75%, 100% -->
+              <g stroke="rgba(255,255,255,0.2)" stroke-width="1.5">
+                <line x1="22"  y1="105" x2="14"  y2="105"/>
+                <line x1="44"  y1="38"  x2="39"  y2="32"/>
+                <line x1="100" y1="27"  x2="100" y2="19"/>
+                <line x1="156" y1="38"  x2="161" y2="32"/>
+                <line x1="178" y1="105" x2="186" y2="105"/>
+              </g>
+              <!-- Fill arc (butt linecap avoids phantom endpoint dot) -->
+              <path class="gauge-fill" id="gauge-fill"
+                    d="M 22 105 A 78 78 0 0 1 178 105"
+                    fill="none" stroke="url(#gaugeGradLow)" stroke-width="14"
+                    stroke-linecap="butt"
+                    stroke-dasharray="244.9" stroke-dashoffset="244.9"/>
+              <!-- Needle: pivot at (100,105), tip at (100,34) = 71px long -->
+              <line class="gauge-needle" id="gauge-needle"
+                    x1="100" y1="105" x2="100" y2="34"
+                    stroke="rgba(255,255,255,0.9)" stroke-width="2.5"
+                    stroke-linecap="round" filter="url(#needleGlow)"/>
+              <!-- Center pivot -->
+              <circle cx="100" cy="105" r="9"  fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+              <circle cx="100" cy="105" r="5"  fill="white"/>
+              <circle cx="100" cy="105" r="2.5" fill="#0D1528"/>
+            </svg>
+            <div class="gauge-value" id="gauge-value">—</div>
+            <div class="gauge-label">Diabetes Probability</div>
+          </div>
+
+          <!-- Risk badge -->
+          <div class="risk-badge" id="risk-badge">
+            <span class="risk-icon" id="risk-icon"></span>
+            <span class="risk-level" id="risk-level"></span>
+            <span class="risk-sublabel">Risk Level</span>
+          </div>
+
+          <!-- Confidence breakdown -->
+          <div class="confidence-bars">
+            <div class="conf-item">
+              <div class="conf-label">
+                <span>Low Risk</span>
+                <span id="conf-low">—</span>
+              </div>
+              <div class="conf-track">
+                <div class="conf-bar conf-bar-low" id="conf-bar-low"></div>
+              </div>
+            </div>
+            <div class="conf-item">
+              <div class="conf-label">
+                <span>High Risk</span>
+                <span id="conf-high">—</span>
+              </div>
+              <div class="conf-track">
+                <div class="conf-bar conf-bar-high" id="conf-bar-high"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feature summary -->
+          <div class="feature-summary" id="feature-summary">
+            <div class="fs-title">Input Summary</div>
+            <div class="fs-grid" id="fs-grid"></div>
+          </div>
+
+          <div class="result-disclaimer">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            For educational purposes only. Not a substitute for medical diagnosis.
+          </div>
+
+          <button class="btn btn-ghost btn-sm" id="back-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            New Assessment
+          </button>
+        </div>
+
+        <!-- Error card -->
+        <div class="error-card glass-card" id="error-card" hidden>
+          <div class="error-icon">⚠️</div>
+          <h3>Connection Error</h3>
+          <p id="error-msg">Unable to reach the prediction API. Make sure the Flask server is running on port 5000.</p>
+          <button class="btn btn-primary btn-sm" id="retry-btn">Retry</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ABOUT SECTION ── -->
+  <section class="about-section" id="about">
+    <div class="section-header">
+      <div class="section-tag">How It Works</div>
+      <h2 class="section-title">About the Model</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-card glass-card" id="about-dataset">
+        <div class="about-icon">📊</div>
+        <h3>Dataset</h3>
+        <p>Trained on the <strong>Pima Indians Diabetes Dataset</strong> — a benchmark dataset with 768 samples from the National Institute of Diabetes and Digestive and Kidney Diseases.</p>
+      </div>
+      <div class="about-card glass-card" id="about-algorithm">
+        <div class="about-icon">🤖</div>
+        <h3>Algorithm</h3>
+        <p><strong>Logistic Regression</strong> with <strong>StandardScaler</strong> normalization. The model predicts the binary probability of Type 2 Diabetes onset.</p>
+      </div>
+      <div class="about-card glass-card" id="about-features">
+        <div class="about-icon">🧬</div>
+        <h3>Features</h3>
+        <p>8 clinical features: Pregnancies, Glucose, Blood Pressure, Skin Thickness, Insulin, BMI, Diabetes Pedigree Function, and Age.</p>
+      </div>
+      <div class="about-card glass-card" id="about-accuracy">
+        <div class="about-icon">🎯</div>
+        <h3>Performance</h3>
+        <p>Achieves approximately <strong>78% accuracy</strong> on held-out test data with an 80/20 stratified train-test split.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="logo-icon">🩺</span>
+        <span class="logo-text">Diabetes<span class="logo-accent">AI</span></span>
+      </div>
+      <p class="footer-tagline">AI-Powered Diabetes Risk Assessment</p>
+      <p class="footer-disclaimer">This tool is for educational and research purposes only. Always consult a qualified healthcare professional for medical advice.</p>
+    </div>
+  </footer>
+
+  <script src="static/app.js"></script>
+</body>
+</html>
