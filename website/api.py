@@ -35,7 +35,7 @@ except Exception as e:
 
 @app.route("/")
 def index():
-    return send_from_directory(".", "index.html")
+    return send_from_directory(os.path.dirname(__file__), "index.html")
 
 
 @app.route("/api/predict", methods=["POST"])
